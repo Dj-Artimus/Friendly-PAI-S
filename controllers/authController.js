@@ -1,7 +1,7 @@
 import bcryptjs from "bcryptjs";
 import User from '../models/UserModel.js';
 import jwt from 'jsonwebtoken';
-import generateTokenAndSetCookie from '../utils/generateTokenandSetCookie.js';
+import generateTokenAndSetCookie from '../utils/generateTokenAndSetCookie.js';
 import { sendResetPasswordEmail, sendResetPasswordSuccessEmail, sendUserVerificationEmail, sendWelcomeEmail } from "../Mail/mailer.js";
 
 

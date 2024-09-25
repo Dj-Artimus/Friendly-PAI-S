@@ -55,7 +55,7 @@ const verifyUser = async (res, token, OTP) => {
 
         const user = await User.findById(userId);
 
-        if (!user) return res.status(404).json({ success: false, message: "User not found, Please Sign Up again." });
+        if (!user) return res.status(404).json({ success: false, message: "User not found, Please Sign Up." });
 
         const isVerificationOTPExpired = Date.now() >= user.userVerificationOTPExpiresAt;
 
@@ -72,8 +72,7 @@ const verifyUser = async (res, token, OTP) => {
         user.isVerified = true;
 
         const sendMail = await sendWelcomeEmail(user.name, user.email);
-        // if (!sendMail) return res.status(401).json({ success: false, message: "Unable to send Welcome Email." })
-
+        
         res.status(202).json({ success: true, message: "Verification Done Successfully." });
         await user.save();
 

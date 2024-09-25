@@ -66,14 +66,20 @@ export const emailVerificationTemplate = (name, token, OTP) => {
         <main
             style="margin-top: 2rem; padding-left: 1.25rem; padding-right: 1.25rem;font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">
             <h2 style="color: #374151;">Hello ${name},</h2>
-            <p style="line-height: 1.5; color: #4b5563;">
-                Please use the following One Time Password(OTP)
+             <p style="line-height: 1.5; color: #4b5563;">
+                Please use the following One Time Password(OTP) or VERIFY button.
             </p>
             <div style="display: flex; align-items: center;justify-content: center; margin-top: 1rem; gap: 20px;">
                 <p class="border otpbox">
                     ${OTP}
                 </p>
             </div>
+            <a href="${verificationLink}" style="display: flex; justify-content: center;">
+                <button
+                    style="padding-left: 1.25rem; padding-right: 1.25rem; padding-top: 0.5rem; padding-bottom: 0.5rem; margin: 10px; font-size: 14px; font-weight: bold; text-transform: capitalize; background-color: #f97316; color: #fff; transition-property: background-color; transition-duration: 300ms; transform: none; border-radius: 0.375rem; border-width: 1px; border: none; outline: none; cursor: pointer;">
+                    VERIFY
+                </button>
+            </a>
             <p style="margin-top: 1rem; line-height: 1.75; color: #4b5563;">
                 This passcode will only be valid for the next
                 <span style="font-weight: bold;"> 10 minutes</span>.

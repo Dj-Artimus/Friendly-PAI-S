@@ -22,7 +22,6 @@ const sendEmail = async (email, subject, htmlTemplate) => {
 
     await transporter.sendMail(receiver, (error, res) => {
         if (error) return console.log(error);
-        console.log(res)
         return res.accepted
     })
 

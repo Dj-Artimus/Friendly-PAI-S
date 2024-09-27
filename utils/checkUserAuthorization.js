@@ -3,7 +3,7 @@ import User from "../models/UserModel.js";
 
 export const isAuth = async (req,res,next) => {
 
-    const token = req.cookies.token;
+    const token = req.cookies.token || req.body.token ;
 
     if (!token) return res.status(403).json({success: false , message: "Session Expired, Please login."});
 
@@ -13,7 +13,7 @@ export const isAuth = async (req,res,next) => {
 
     const user = await User.findById(userId);
 
-    if (!user) return res.status(403).json({success: false , message: "User not found, try to Login again."});
+    if (!user) return res.status(403).json({success: false , message: "User not found"});
 
     req.user = user;
     

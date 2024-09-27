@@ -30,10 +30,9 @@ export const signUp = async (req, res) => {
 
         const userVerificationToken = generateTokenAndSetCookie(res, user._id);
 
-        const sendMail = await sendUserVerificationEmail(name, email, userVerificationToken, userVerificationOTP);
-        // console.log(`this is the email confirmed ${sendMail}`)
-        // if (!sendMail) return res.status(401).json({ success: false, message: "Unable to send Verification Code. Please try again." })
-        res.status(201).json({ success: true, message: "User registered successfully." })
+        await sendUserVerificationEmail(name, email, userVerificationToken, userVerificationOTP);
+
+        res.status(201).json({ success: true, message: "User registered successfully.", token: userVerificationToken });
         await user.save()
 
     } catch (error) {
@@ -71,8 +70,8 @@ const verifyUser = async (res, token, OTP) => {
         user.userVerificationOTPExpiresAt = undefined;
         user.isVerified = true;
 
-        const sendMail = await sendWelcomeEmail(user.name, user.email);
-        
+        await sendWelcomeEmail(user.name, user.email);
+
         res.status(202).json({ success: true, message: "Verification Done Successfully." });
         await user.save();
 
@@ -157,9 +156,9 @@ export const login = async (req, res) => {
 
         if (!verifyPassword) return res.status(401).json({ success: false, message: "Password didn't match , Please try again." });
 
-        generateTokenAndSetCookie(res, userId);
+        const token = generateTokenAndSetCookie(res, userId);
 
-        res.status(202).json({ success: true, message: "Successfully loged in." })
+        res.status(202).json({ success: true, message: "Successfully loged in." , token })
     } catch (error) {
         console.log(error);
         res.status(500).json({ success: false, message: error.message })
@@ -168,11 +167,11 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
-        res.clearCookie("token", { 
-            httpOnly: true, 
+        res.clearCookie("token", {
+            httpOnly: true,
             sameSite: "none",  // Set to "none" if your site requires cross-site access
             secure: process.env.NODE_ENV === "production",  // Set to true if your site requires HTTPS
-        } )
+        })
         return res.status(200).json({ success: true, message: "Logout Successful" })
     } catch (error) {
         console.log(error);

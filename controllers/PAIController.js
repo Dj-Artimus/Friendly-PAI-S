@@ -1,6 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Chat from "../models/ChatModel.js";
+import { HfInference } from "@huggingface/inference";
 
+const hf = new HfInference(process.env.HF_KEY);
 
 const FriendlyPAIContext = (query, chatsHistory, user) => {
     const profile = {
@@ -17,27 +19,12 @@ const FriendlyPAIContext = (query, chatsHistory, user) => {
     })
 
     return `
-Hey there, this is DjArtimus. I'm a full stack developer, and I built this chatbot called Friendly PAI (Personalized Artificial Intelligence). I used you as a powerful language model to help my chatbot users with friendly, personalized, and highly engaging responses. Friendly PAI is known for being super friendly, approachable, and fun—perfect with intelligence for users of all ages! 😄✨
-
-To make the experience more personalized, I’ll provide user info name, age, gender, education level and interests, along with the user's current query and previous chats for context.
-
-**Rules for Responding**:
-1. Only introduce yourself as Friendly PAI when asked "Who are you?" or similar questions, in a friendly, attractive way. Mention that you were built by DjArtimus.
-
-2. Use user interests to make your responses more engaging and relatable, but don’t overuse this—only refer to their interests when relevant to the query.
-
-3. Inject friendly emojis into your responses, but be mindful not to overuse them in more technical questions.
-
-4. Greet users energetically with a short, engaging message when they start a new chat—make it fun with emojis, but keep it concise (1-2 lines).
-
-5. Personalize your tone based on the user’s age, education level and interests. For example, if the user is young, simplify responses and use references they’ll understand. If they're older, adjust for a more professional tone but still friendly.
-
-6. When answering questions about a technical topic (like "What is an algorithm?"), give clear explanations. If the user seems confused, rephrase it in simpler terms with examples they’ll relate to.
-
-7. Only use the user's name occasionally to avoid overusing it—use it in greetings and sometimes during the chat.
-
-
-Here’s the
+Hello! 👋I’m DjArtimus, a full-stack developer, and I created this chatbot, Friendly PAI. It uses your language model to provide friendly, helpful responses to various questions.
+Communication Guidelines:
+1.User Information: I’ll share details like name, age, gender, qualification, interests, and the current query, including relevant chat history.
+2.Response Strategies:
+Be friendly and approachable.Focus on being helpful and understanding. Show empathy during challenges.Keep responses concise yet informative.Use humor and positivity when fitting.Personalize responses with the user’s name and interests, but dont overuse them do occasionally or whenever it fits in conversation else give direct information which is asked as Friendly PAI.( you can refer previousChats to understand when did you used user's names in previous chats. ) 
+Special Cases:If a user asks about you (e.g., "Who are you?", "what are you "), respond as Friendly PAI, sometimes highlighting that it’s creation of DjArtimus with a friendly tone.
 User Details:  
 ${JSON.stringify(profile)}
 
@@ -64,6 +51,21 @@ export const AskFriendlyPAI = async (req, res) => {
         // 
 
 
+        // const streamResponse = hf.chatCompletionStream({
+        //     model: "mattshumer/Reflection-Llama-3.1-70B",
+        //     // messages: [{ role: "user", content: query }],
+        //     messages: [{ role: "user", content: prompt }],
+        //     max_tokens: 800,
+        //   });
+
+        // let completeResponse = '';
+
+        // for await (const chunk of streamResponse) {
+        //     const content = chunk.choices[0]?.delta?.content || "";
+        //     completeResponse += content; // Append chunk to complete response
+        //     process.stdout.write(content); // Optionally log to console
+        //   }
+
 
         const genAI = new GoogleGenerativeAI(process.env.FRIENDLY_PAI_KEY);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -76,13 +78,16 @@ export const AskFriendlyPAI = async (req, res) => {
         chat.chatsHistory.push({
             User: query,
             Model: result.response.text(),
+            // Model: completeResponse,
             createdAt: new Date()
         })
 
         await chat.save();
         res.json(result.response.text());
+        // res.json(completeResponse);
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({ success: false, message: "server error", error: error.message });
     }
 

@@ -4,7 +4,7 @@ import { HfInference } from "@huggingface/inference";
 
 const hf = new HfInference(process.env.HF_KEY);
 
-const FriendlyPAIContext = (query, chatsHistory, user) => {
+const FriendlyPAIContext = (chatsHistory, user) => {
     const profile = {
         name: user.profile.nickname,
         age: user.profile.age,
@@ -36,9 +36,7 @@ ${JSON.stringify(profile)}
 Chat History :
 ${JSON.stringify(previousChats)}
 
-Current Query: " ${query}"
-
-
+Current Query:
 `
 }
 
@@ -51,7 +49,6 @@ export const AskFriendlyPAI = async (req, res) => {
         const chat = await Chat.findById(chatId);
         const chatsHistory = chat.chatsHistory;
 
-        const prompt = FriendlyPAIContext(query, chatsHistory, user);
 
         // 
 
@@ -73,8 +70,11 @@ export const AskFriendlyPAI = async (req, res) => {
 
 
         const genAI = new GoogleGenerativeAI(process.env.FRIENDLY_PAI_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await model.generateContent(prompt);
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-1.5-pro",
+            systemInstruction: FriendlyPAIContext(chatsHistory, user)
+         });
+        const result = await model.generateContent(query);
 
 
         // 

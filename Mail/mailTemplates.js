@@ -123,7 +123,7 @@ export const emailVerificationTemplate = (name, token, OTP) => {
 }
 
 export const welcomeEmailTemplate = (name) => {
-    const PAILink = `${process.env.SERVER}:${process.env.PORT}`;
+    const PAILink = `${process.env.CLIENT_URL}`;
     return `<html lang="en">
 
 <head>
@@ -255,7 +255,6 @@ export const welcomeEmailTemplate = (name) => {
 
 export const forgotPasswordEmailTemplate = (name, token) => {
     const resetPasswordLink = `${process.env.CLIENT_URL}/reset-password/${token}`;
-    console.log(resetPasswordLink)
     return `<html lang="en">
 
 <head>

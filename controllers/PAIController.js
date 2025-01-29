@@ -166,7 +166,7 @@ const GRoq = async (query, chatsHistory, user) => {
 
         const chatCompletion = await groq.chat.completions.create({
             messages,
-            model: "llama-3.1-70b-versatile",
+            model: "llama-3.3-70b-versatile",
             temperature: 1,
             max_tokens: 1024,
             top_p: 1,
